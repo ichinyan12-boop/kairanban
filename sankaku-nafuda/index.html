@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>三角名札の作り方｜差し込み印刷なしで一括作成できる無料の卓上名札メーカー</title>
+<meta name="description" content="会議や総会で使う三角名札（卓上名札）を、差し込み印刷なしで一括作成できる無料の道具です。Excelの名簿をコピーして貼るだけで、1人1枚のA4横に前と後ろの両方から読める名札ができます。スマホでも使えます。">
+<style id="pageStyle">@page{size:A4 landscape;margin:0}</style>
+<style>:root{
+  --bg:#fbf8f1; --card:#ffffff; --ink:#1d1d1d; --sub:#555; --line:#d8d0bf;
+  --main:#1f5f8b; --main-ink:#ffffff; --main-dark:#164766; --accent:#b4432b;
+  --soft:#eef4f8; --warn:#fff4d6;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","BIZ UDPGothic","Yu Gothic","YuGothic","Meiryo","Noto Sans JP","Noto Sans CJK JP",sans-serif;
+  font-size:20px;line-height:1.7}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 40px}
+header.top{padding:18px 0 6px}
+header.top a.home{display:inline-block;font-size:18px;color:var(--main);margin-bottom:6px}
+h1{font-size:28px;line-height:1.35;margin:4px 0 8px}
+h2{font-size:23px;margin:0 0 12px;line-height:1.4}
+h2 .no{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;
+  background:var(--main);color:#fff;font-size:20px;margin-right:8px;vertical-align:2px}
+p.lead{margin:0 0 14px;color:var(--sub)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;margin:16px 0;
+  box-shadow:0 1px 0 rgba(0,0,0,.03)}
+label.f{display:block;font-weight:bold;margin:14px 0 6px}
+label.f:first-child{margin-top:0}
+.hint{font-size:17px;color:var(--sub);margin:4px 0 0;line-height:1.55}
+input[type=text],textarea,select{width:100%;font:inherit;font-size:20px;padding:12px 12px;border:2px solid #b9b2a3;
+  border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:220px;line-height:1.6}
+input[type=text]:focus,textarea:focus,select:focus{outline:3px solid #9cc3e0;border-color:var(--main)}
+.check{display:flex;align-items:center;gap:12px;padding:10px 4px;font-size:20px;cursor:pointer}
+.check input{width:30px;height:30px;flex:none;accent-color:var(--main)}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice label{display:flex;align-items:center;gap:10px;border:2px solid #b9b2a3;border-radius:12px;padding:12px;cursor:pointer;
+  background:#fff;font-weight:bold;line-height:1.35}
+.choice input{width:26px;height:26px;flex:none;accent-color:var(--main)}
+.choice label:has(input:checked){border-color:var(--main);background:var(--soft)}
+button{font:inherit;cursor:pointer}
+.btn{display:block;width:100%;min-height:64px;border:0;border-radius:14px;font-size:22px;font-weight:bold;
+  padding:12px 16px;margin:10px 0;background:var(--main);color:var(--main-ink)}
+.btn:active{background:var(--main-dark)}
+.btn.sub{background:#fff;color:var(--main);border:2px solid var(--main)}
+.btn.small{min-height:52px;font-size:19px}
+.btns2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns2 .btn{margin:6px 0}
+.preview{background:#e9e4d8;border-radius:12px;padding:12px;text-align:center}
+.preview canvas{width:100%;height:auto;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);display:block;margin:0 auto}
+.msg{background:var(--warn);border-radius:10px;padding:10px 14px;margin:10px 0;font-weight:bold;display:none}
+.msg.show{display:block}
+.outimgs{margin-top:12px}
+.outimg{border-top:1px dashed var(--line);padding:14px 0}
+.outimg img{width:100%;height:auto;border:1px solid #ccc;background:#fff;display:block}
+.outimg a{display:block;text-align:center;font-weight:bold;font-size:20px;margin-top:8px;padding:12px;border:2px solid var(--main);
+  border-radius:12px;color:var(--main);text-decoration:none}
+.howto ol{padding-left:1.4em;margin:6px 0}
+.howto li{margin:6px 0}
+.safe{font-size:17px;color:var(--sub)}
+footer{font-size:16px;color:var(--sub);text-align:center;padding:24px 0}
+#printArea{display:none}
+@media print{
+  body{background:#fff}
+  body > *:not(#printArea){display:none !important}
+  #printArea{display:block}
+  #printArea .pg{overflow:hidden;break-after:page;page-break-after:always;margin:0;padding:0}
+  #printArea .pg:last-child{break-after:auto;page-break-after:auto}
+  #printArea img{display:block;width:100%;height:100%}
+}
+@media (max-width:420px){
+  h1{font-size:25px}
+  .btns2{grid-template-columns:1fr}
+  .choice{grid-template-columns:1fr}
+}
+
+.pvnav{display:flex;align-items:center;gap:10px;margin-top:10px}
+.pvnav button{flex:none;min-width:96px;min-height:54px;border:2px solid var(--main);background:#fff;color:var(--main);border-radius:12px;font-size:19px;font-weight:bold}
+.pvnav button:disabled{opacity:.3}
+.pvnav .who{flex:1;text-align:center;font-weight:bold}
+.fold{display:flex;gap:12px;align-items:flex-start;background:var(--soft);border-radius:12px;padding:12px;margin-top:12px}
+.fold svg{flex:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="home" href="../index.html">← 班長・幹事の道具 トップへ</a>
+  <h1>三角名札（卓上名札）一括メーカー</h1>
+  <p class="lead">会議や総会の三角名札を、何人分でもまとめて作れます。差し込み印刷はいりません。名前を貼るだけです。</p>
+</header>
+
+<section class="card">
+  <h2><span class="no">1</span>名前を入れる</h2>
+  <label class="f" for="names">名前（1行に1人）</label>
+  <textarea id="names" placeholder="例：&#10;山田 太郎&#10;鈴木 花子&#10;長谷川ひろみつ"></textarea>
+  <p class="hint">Excelの名前の列をコピーして、ここに貼るとそのまま入ります。「所属」と「名前」の2列をいっしょにコピーした場合は、左が所属・右が名前になります。</p>
+  <p class="hint" id="count"></p>
+  <label class="f" for="org">所属（全員に同じものを入れる時。なくてもよい）</label>
+  <input type="text" id="org" placeholder="例：さくら町内会">
+  <label class="check"><input type="checkbox" id="showOrg" checked>所属を名前の上に小さく入れる</label>
+  <label class="f" for="honor">名前のあとにつける言葉</label>
+  <select id="honor">
+    <option value="">つけない</option>
+    <option value="様">様</option>
+    <option value="さん">さん</option>
+    <option value="殿">殿</option>
+  </select>
+</section>
+
+<section class="card">
+  <h2><span class="no">2</span>書き方をえらぶ</h2>
+  <div class="choice">
+    <label><input type="radio" name="dir" value="yoko" checked>横書き<br>（おすすめ）</label>
+    <label><input type="radio" name="dir" value="tate">縦書き</label>
+  </div>
+  <p class="hint">縦書きは、名前が短い人向けです（長い名前は字が小さくなります）。</p>
+  <p class="hint">見本（A4よこ1枚＝1人分）。名前の長さに合わせて字の大きさが自動で変わります。</p>
+  <div class="preview"><canvas id="pv" aria-label="できあがりの見本"></canvas></div>
+  <div class="pvnav">
+    <button type="button" id="prev">← 前の人</button>
+    <span class="who" id="who"></span>
+    <button type="button" id="next">次の人 →</button>
+  </div>
+  <div class="fold">
+    <svg width="96" height="72" viewBox="0 0 96 72" aria-hidden="true"><polygon points="48,6 88,66 8,66" fill="#fff" stroke="#1f5f8b" stroke-width="3"/><text x="48" y="50" font-size="13" text-anchor="middle" fill="#1f5f8b">名前</text></svg>
+    <div>点線の2か所で山折りにすると三角の形になります。いちばん下の細い部分を内側に入れて、テープでとめてください。前からも後ろからも名前が読めます。</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="no">3</span>印刷する・保存する</h2>
+  <div class="btns2">
+    <button class="btn" id="btnPrint">全員分を印刷する</button>
+    <button class="btn sub" id="btnImg">画像で保存する</button>
+  </div>
+  <p class="hint">「全員分を印刷する」は、1人1枚（A4よこ）で続けて印刷します。プリンターの設定で「用紙：A4・横」を選んでください。</p>
+  <div class="msg" id="msg"></div>
+  <div class="outimgs" id="out"></div>
+</section>
+
+<section class="card howto">
+  <h2>使い方（3ステップ）</h2>
+  <ol>
+    <li>名前を1行に1人ずつ入れます（Excelからコピーして貼ってもOK）。</li>
+    <li>所属や「様」をつけるか、横書きか縦書きかをえらび、見本で確かめます。</li>
+    <li>「全員分を印刷する」で1人1枚ずつ印刷します。プリンターがない時は「画像で保存する」で画像にして、コンビニのネットプリントで印刷できます。印刷したら点線で折って三角にします。</li>
+  </ol>
+  <p class="safe">入れた名前は、この端末の中だけに保存されます（次に開いたときも残っています）。インターネットのどこにも送りません。</p>
+</section>
+
+<!-- MONETIZE_SLOT -->
+
+<footer>班長・幹事の道具 ／ 無料・登録なし</footer>
+</div>
+<div id="printArea"></div>
+
+<script>/* ---- 共通（このページだけで完結。外部への通信はしません） ---- */
+var FONT='"Hiragino Sans","Hiragino Kaku Gothic ProN","BIZ UDPGothic","Yu Gothic","YuGothic","Meiryo","Noto Sans JP","Noto Sans CJK JP",sans-serif';
+var DPI=200;
+function $(id){return document.getElementById(id)}
+function makeStore(key){
+  return {
+    load:function(){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}},
+    save:function(v){try{localStorage.setItem(key,JSON.stringify(v));return true}catch(e){return false}}
+  };
+}
+function setFont(ctx,size,weight){ctx._fs=size;ctx._fw=weight||'bold';ctx.font=ctx._fw+' '+size+'px '+FONT}
+/* 小さい字（mm単位）をそのまま書くと字間がくずれるので、10倍の大きさで書いて縮める */
+function fillT(ctx,text,x,y){
+  ctx.save();ctx.scale(0.1,0.1);ctx.font=ctx._fw+' '+(ctx._fs*10)+'px '+FONT;
+  ctx.fillText(text,x*10,y*10);ctx.restore();
+}
+/* 幅maxW・高さmaxHに収まる文字の大きさ（単位はmm） */
+function fitSize(ctx,text,maxW,maxH,weight){
+  if(!text)return maxH;
+  setFont(ctx,100,weight);
+  var w=ctx.measureText(text).width||1;
+  return Math.max(0.5,Math.min(maxH,maxW*100/w));
+}
+/* 長い名前を2行に分ける位置（・や空白を優先） */
+function splitTwo(s){
+  var seps=['・','　',' ','、','／','/','＆','&'],best=-1,mid=s.length/2,bd=1e9;
+  for(var i=1;i<s.length-1;i++){
+    if(seps.indexOf(s[i])>=0){var d=Math.abs(i-mid);if(d<bd){bd=d;best=i}}
+  }
+  if(best>0){
+    var a=s.slice(0,s[best]==='・'||s[best]==='＆'||s[best]==='&'?best+1:best).trim(),b=s.slice(best+1).trim();
+    if(a&&b)return [a,b];
+  }
+  var m=Math.ceil(s.length/2);return [s.slice(0,m),s.slice(m)];
+}
+/* 1行か2行か、大きく書ける方を選ぶ */
+function fitName(ctx,name,maxW,maxH,allowTwo,weight){
+  var one=fitSize(ctx,name,maxW,maxH,weight);
+  if(allowTwo&&name.length>=5){
+    var p=splitTwo(name);
+    var two=Math.min(fitSize(ctx,p[0],maxW,maxH*0.46,weight),fitSize(ctx,p[1],maxW,maxH*0.46,weight));
+    if(two>one*1.2)return {lines:p,size:two};
+  }
+  return {lines:[name],size:one};
+}
+/* 行を中央（または左）に書く。cyは中心のy */
+function drawLines(ctx,fit,x,cy,align,weight,color){
+  setFont(ctx,fit.size,weight);
+  ctx.fillStyle=color||'#111';ctx.textAlign=align||'center';ctx.textBaseline='middle';
+  var lh=fit.size*1.12,n=fit.lines.length,y0=cy-lh*(n-1)/2;
+  for(var i=0;i<n;i++)fillT(ctx,fit.lines[i],x,y0+i*lh+fit.size*0.04);
+}
+function makeCanvas(wmm,hmm,dpi){
+  var s=dpi/25.4,c=document.createElement('canvas');
+  c.width=Math.round(wmm*s);c.height=Math.round(hmm*s);
+  var ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+  ctx.scale(c.width/wmm,c.height/hmm);
+  return {c:c,ctx:ctx};
+}
+function renderPreview(cv,wmm,hmm,draw){
+  var cssW=Math.max(200,cv.parentElement.clientWidth-24),dpr=Math.min(2,window.devicePixelRatio||1);
+  var maxCss=wmm>hmm?720:520;cssW=Math.min(cssW,maxCss);
+  cv.style.width=cssW+'px';
+  cv.width=Math.round(cssW*dpr);cv.height=Math.round(cssW*dpr*hmm/wmm);
+  var ctx=cv.getContext('2d');ctx.setTransform(1,0,0,1,0,0);
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.scale(cv.width/wmm,cv.height/hmm);
+  draw(ctx);
+}
+function arrow(ctx,x1,y1,x2,y2,w){
+  var a=Math.atan2(y2-y1,x2-x1),h=w*3.2;
+  ctx.strokeStyle='#333';ctx.fillStyle='#333';ctx.lineWidth=w;ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2-Math.cos(a)*h*0.8,y2-Math.sin(a)*h*0.8);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-Math.cos(a)*h-Math.sin(a)*h*0.6,y2-Math.sin(a)*h+Math.cos(a)*h*0.6);
+  ctx.lineTo(x2-Math.cos(a)*h+Math.sin(a)*h*0.6,y2-Math.sin(a)*h-Math.cos(a)*h*0.6);
+  ctx.closePath();ctx.fill();
+}
+function showMsg(id,text){var m=$(id);if(!m)return;m.textContent=text;m.className='msg'+(text?' show':'')}
+/* 画像を画面に並べる（長押しで保存できる）＋ダウンロードのリンク */
+function showImages(box,list){
+  box.innerHTML='';
+  list.forEach(function(it){
+    var d=document.createElement('div');d.className='outimg';
+    if(it.label){var p=document.createElement('p');p.style.margin='0 0 6px';p.style.fontWeight='bold';p.textContent=it.label;d.appendChild(p)}
+    var im=document.createElement('img');im.src=it.url;im.alt=it.label||'できあがりの画像';d.appendChild(im);
+    var a=document.createElement('a');a.href=it.url;a.download=it.file;a.textContent='この画像をダウンロード（'+it.file+'）';d.appendChild(a);
+    box.appendChild(d);
+  });
+}
+/* 印刷：1枚ずつA4の大きさで並べて window.print */
+function printPages(urls,landscape){
+  var st=$('pageStyle');
+  st.textContent='@page{size:A4 '+(landscape?'landscape':'portrait')+';margin:0}'+
+    '@media print{#printArea .pg{width:'+(landscape?'297mm':'210mm')+';height:'+(landscape?'209.5mm':'296.5mm')+'}}';
+  var pa=$('printArea');pa.innerHTML='';
+  var pending=urls.length;
+  return new Promise(function(res){
+    if(!pending){res();return}
+    urls.forEach(function(u){
+      var pg=document.createElement('div');pg.className='pg';
+      var im=new Image();im.onload=im.onerror=function(){if(--pending===0)res()};im.src=u;
+      pg.appendChild(im);pa.appendChild(pg);
+    });
+  });
+}
+function debounce(fn,ms){var t;return function(){clearTimeout(t);t=setTimeout(fn,ms)}}
+function lines(text){return String(text||'').replace(/\r/g,'').split('\n').map(function(s){return s.replace(/^\s+|\s+$/g,'')}).filter(function(s){return s.length})}
+/* 2回押すと実行するボタン（確認ダイアログを出さない） */
+function twoStep(btn,fn){
+  var orig=btn.textContent,armed=false,t;
+  btn.addEventListener('click',function(){
+    if(!armed){armed=true;btn.textContent='本当に消しますか？ もう一度押すと消えます';t=setTimeout(function(){armed=false;btn.textContent=orig},5000);return}
+    clearTimeout(t);armed=false;btn.textContent=orig;fn();
+  });
+}
+
+var store=makeStore('sankaku_nafuda_v1');
+var st={names:'',org:'',showOrg:true,honor:'',dir:'yoko'};
+(function(){var s=store.load();if(s)for(var k in st)if(k in s)st[k]=s[k]})();
+var W=297,H=210,F1=85,F2=170,cur=0;
+
+function people(){
+  return String(st.names||'').replace(/\r/g,'').split('\n').map(function(l){
+    if(!l.trim())return null;
+    var p=l.split('\t').map(function(s){return s.trim()});
+    if(p.length>=2){var nonEmpty=p.filter(Boolean);
+      if(nonEmpty.length>=2)return {org:nonEmpty[0],name:nonEmpty[1]};
+      return {org:'',name:nonEmpty[0]||''};}
+    return {org:'',name:l.trim()};
+  }).filter(function(x){return x&&x.name});
+}
+var VROT='ー－―‐-〜～…‥()（）「」『』【】［］[]＝=→←';
+function drawVertical(ctx,text,cx,y0,size,weight,color){
+  setFont(ctx,size,weight);ctx.fillStyle=color||'#111';ctx.textAlign='center';ctx.textBaseline='middle';
+  for(var i=0;i<text.length;i++){
+    var ch=text[i],cy=y0+size*(i+0.5);
+    if(ch===' '||ch==='　')continue;
+    if(VROT.indexOf(ch)>=0){ctx.save();ctx.translate(cx,cy);ctx.rotate(Math.PI/2);fillT(ctx,ch,0,0);ctx.restore()}
+    else if('、。'.indexOf(ch)>=0){fillT(ctx,ch,cx+size*0.6,cy-size*0.55)}
+    else fillT(ctx,ch,cx,cy);
+  }
+}
+function vlen(t){return t.replace(/\s+/g,' ').length}
+function face(ctx,x,y,w,h,p){
+  var org=st.showOrg?(p.org||st.org||''):'';
+  var hon=st.honor,name=p.name,pad=10;
+  var iw=w-pad*2,ih=h-pad*2;
+  if(st.dir==='tate'){
+    var nm=name.replace(/\s+/g,'　'),hu=hon?0.7*hon.length+0.2:0;
+    // 1列で書く案と、姓と名で2列に分ける案のうち、字が大きくなる方
+    var one={cols:[nm],s:Math.min(ih/(vlen(nm)+hu),iw*0.4,58)};
+    var parts=name.trim().split(/\s+/),two=null;
+    if(parts.length<2&&nm.indexOf('・')>0&&nm.indexOf('・')<nm.length-1){var k=nm.indexOf('・');parts=[nm.slice(0,k+1),nm.slice(k+1)]}
+    if(parts.length>=2){
+      var a1=parts[0],a2=parts.slice(1).join('　');
+      var units2=Math.max(vlen(a1),vlen(a2)+hu+0.6);
+      two={cols:[a1,a2],s:Math.min(ih/units2,iw*0.2,58)};
+    }
+    var L=(two&&two.s>one.s*1.15)?two:one,sz=L.s;
+    var orgS=org?Math.min(sz*0.55,ih/Math.max(1,vlen(org)),12):0;
+    var gap=sz*0.25,totalW=L.cols.length*sz+(L.cols.length-1)*gap+(org?orgS+sz*0.5:0);
+    var right=x+w/2+totalW/2,cx;
+    if(org){cx=right-orgS/2;var oh=orgS*vlen(org);drawVertical(ctx,org,cx,y+pad+(ih-oh)/2,orgS,'bold','#333');right-=orgS+sz*0.5}
+    L.cols.forEach(function(col,i){
+      cx=right-sz/2;
+      var last=i===L.cols.length-1,cu=vlen(col)+(last?hu:0);
+      var y0=(L.cols.length===1)?y+pad+(ih-sz*cu)/2:(i===0?y+pad:y+pad+ih-sz*cu);
+      drawVertical(ctx,col,cx,y0,sz);
+      if(last&&hon)drawVertical(ctx,hon,cx,y0+sz*vlen(col)+sz*0.2,sz*0.7);
+      right-=sz+gap;
+    });
+    return;
+  }
+  var orgH=org?ih*0.2:0,gap=org?ih*0.04:0;
+  if(org){var os=fitSize(ctx,org,iw*0.9,orgH);setFont(ctx,os);ctx.fillStyle='#333';ctx.textAlign='center';ctx.textBaseline='middle';fillT(ctx,org,x+w/2,y+pad+orgH/2)}
+  var nh=ih-orgH-gap,ny=y+pad+orgH+gap;
+  setFont(ctx,100);var wn=ctx.measureText(name).width;var wh=hon?ctx.measureText(hon).width*0.62+12:0;
+  var s2=Math.min(nh*0.86,iw*100/(wn+wh));
+  setFont(ctx,s2);ctx.fillStyle='#111';ctx.textBaseline='middle';ctx.textAlign='left';
+  var tw=wn*s2/100+wh*s2/100,sx=x+w/2-tw/2,cy=ny+nh/2;
+  fillT(ctx,name,sx,cy+s2*0.04);
+  if(hon){setFont(ctx,s2*0.62);fillT(ctx,hon,sx+wn*s2/100+s2*0.12,cy+s2*0.12)}
+}
+function draw(ctx,p){
+  // 上（さかさま）
+  ctx.save();ctx.translate(W/2,F1/2);ctx.rotate(Math.PI);ctx.translate(-W/2,-F1/2);face(ctx,0,0,W,F1,p);ctx.restore();
+  // 下（そのまま）
+  face(ctx,0,F1,W,F2-F1,p);
+  // 折り線
+  ctx.strokeStyle='#888';ctx.lineWidth=0.35;ctx.setLineDash([3,2]);
+  [F1,F2].forEach(function(fy){ctx.beginPath();ctx.moveTo(6,fy);ctx.lineTo(W-6,fy);ctx.stroke()});
+  ctx.setLineDash([]);
+  setFont(ctx,3.4,'normal');ctx.fillStyle='#999';ctx.textBaseline='bottom';ctx.textAlign='left';
+  fillT(ctx,'山折り',8,F1-0.8);fillT(ctx,'山折り',8,F2-0.8);
+  ctx.textAlign='center';ctx.textBaseline='middle';setFont(ctx,4,'normal');
+  fillT(ctx,'ここは底になります（内側に折りこんでテープでとめる）',W/2,(F2+H)/2);
+}
+function sample(){return [{org:'',name:'山田 太郎'}]}
+
+/* ---- 画面 ---- */
+var pv=$('pv');
+function list(){var l=people();return l.length?l:null}
+function renderPv(){
+  var l=list()||sample();if(cur>=l.length)cur=l.length-1;if(cur<0)cur=0;
+  renderPreview(pv,W,H,function(ctx){draw(ctx,l[cur])});
+  $('who').textContent=list()?((cur+1)+' / '+l.length+' 人目'):'（見本）';
+  $('prev').disabled=cur<=0;$('next').disabled=cur>=l.length-1;
+  $('count').textContent=list()?('いま '+l.length+' 人です。'):'';
+}
+var refresh=debounce(renderPv,150);
+function readForm(){
+  st.names=$('names').value;st.org=$('org').value;st.showOrg=$('showOrg').checked;st.honor=$('honor').value;
+  var r=document.querySelector('input[name=dir]:checked');st.dir=r?r.value:'yoko';
+}
+function fillForm(){
+  $('names').value=st.names;$('org').value=st.org;$('showOrg').checked=st.showOrg;$('honor').value=st.honor;
+  var r=document.querySelector('input[name=dir][value='+st.dir+']');if(r)r.checked=true;
+}
+function onChange(){readForm();store.save(st);refresh();$('out').innerHTML='';showMsg('msg','')}
+fillForm();renderPv();
+document.querySelectorAll('input,textarea,select').forEach(function(el){el.addEventListener('input',onChange);el.addEventListener('change',onChange)});
+$('prev').onclick=function(){cur--;renderPv()};$('next').onclick=function(){cur++;renderPv()};
+window.addEventListener('resize',refresh);
+function images(){
+  var l=list();if(!l)return null;
+  return l.map(function(p){var m=makeCanvas(W,H,DPI);draw(m.ctx,p);var u=m.c.toDataURL('image/png');m.c.width=m.c.height=1;return u});
+}
+function safeName(s){return s.replace(/[\\\/:*?"<>|\s]+/g,'')||'nafuda'}
+$('btnPrint').onclick=function(){
+  readForm();var u=images();
+  if(!u){showMsg('msg','先に名前を入れてください。');return}
+  showMsg('msg',u.length+'人分を印刷します。');
+  printPages(u,true).then(function(){window.print()});
+};
+$('btnImg').onclick=function(){
+  readForm();var l=list();
+  if(!l){showMsg('msg','先に名前を入れてください。');return}
+  showMsg('msg','画像を作っています…');
+  setTimeout(function(){
+    var u=images();
+    showImages($('out'),u.map(function(x,i){var n=('00'+(i+1)).slice(-3);return {url:x,file:'nafuda_'+n+'_'+safeName(l[i].name)+'.png',label:(i+1)+'人目：'+l[i].name}}));
+    showMsg('msg',u.length+'人分の画像ができました。画像を長押しすると「写真に保存」できます。');
+    $('out').scrollIntoView({behavior:'smooth',block:'start'});
+  },30);
+};
+</script>
+</body>
+</html>

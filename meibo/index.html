@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>回覧板・班の名簿の作り方｜パソコンなしでスマホで作れる無料名簿メーカー</title>
+<meta name="description" content="町内会・自治会の班の名簿（回覧板の名簿）を、パソコンなしでスマホだけで作れる無料の道具です。お名前・住所や号・電話・備考を入れるとA4たて1枚に自動で収まり、画像で保存してネットプリントで印刷できます。">
+<style id="pageStyle">@page{size:A4 portrait;margin:0}</style>
+<style>:root{
+  --bg:#fbf8f1; --card:#ffffff; --ink:#1d1d1d; --sub:#555; --line:#d8d0bf;
+  --main:#1f5f8b; --main-ink:#ffffff; --main-dark:#164766; --accent:#b4432b;
+  --soft:#eef4f8; --warn:#fff4d6;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","BIZ UDPGothic","Yu Gothic","YuGothic","Meiryo","Noto Sans JP","Noto Sans CJK JP",sans-serif;
+  font-size:20px;line-height:1.7}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 40px}
+header.top{padding:18px 0 6px}
+header.top a.home{display:inline-block;font-size:18px;color:var(--main);margin-bottom:6px}
+h1{font-size:28px;line-height:1.35;margin:4px 0 8px}
+h2{font-size:23px;margin:0 0 12px;line-height:1.4}
+h2 .no{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;
+  background:var(--main);color:#fff;font-size:20px;margin-right:8px;vertical-align:2px}
+p.lead{margin:0 0 14px;color:var(--sub)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;margin:16px 0;
+  box-shadow:0 1px 0 rgba(0,0,0,.03)}
+label.f{display:block;font-weight:bold;margin:14px 0 6px}
+label.f:first-child{margin-top:0}
+.hint{font-size:17px;color:var(--sub);margin:4px 0 0;line-height:1.55}
+input[type=text],textarea,select{width:100%;font:inherit;font-size:20px;padding:12px 12px;border:2px solid #b9b2a3;
+  border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:220px;line-height:1.6}
+input[type=text]:focus,textarea:focus,select:focus{outline:3px solid #9cc3e0;border-color:var(--main)}
+.check{display:flex;align-items:center;gap:12px;padding:10px 4px;font-size:20px;cursor:pointer}
+.check input{width:30px;height:30px;flex:none;accent-color:var(--main)}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice label{display:flex;align-items:center;gap:10px;border:2px solid #b9b2a3;border-radius:12px;padding:12px;cursor:pointer;
+  background:#fff;font-weight:bold;line-height:1.35}
+.choice input{width:26px;height:26px;flex:none;accent-color:var(--main)}
+.choice label:has(input:checked){border-color:var(--main);background:var(--soft)}
+button{font:inherit;cursor:pointer}
+.btn{display:block;width:100%;min-height:64px;border:0;border-radius:14px;font-size:22px;font-weight:bold;
+  padding:12px 16px;margin:10px 0;background:var(--main);color:var(--main-ink)}
+.btn:active{background:var(--main-dark)}
+.btn.sub{background:#fff;color:var(--main);border:2px solid var(--main)}
+.btn.small{min-height:52px;font-size:19px}
+.btns2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns2 .btn{margin:6px 0}
+.preview{background:#e9e4d8;border-radius:12px;padding:12px;text-align:center}
+.preview canvas{width:100%;height:auto;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);display:block;margin:0 auto}
+.msg{background:var(--warn);border-radius:10px;padding:10px 14px;margin:10px 0;font-weight:bold;display:none}
+.msg.show{display:block}
+.outimgs{margin-top:12px}
+.outimg{border-top:1px dashed var(--line);padding:14px 0}
+.outimg img{width:100%;height:auto;border:1px solid #ccc;background:#fff;display:block}
+.outimg a{display:block;text-align:center;font-weight:bold;font-size:20px;margin-top:8px;padding:12px;border:2px solid var(--main);
+  border-radius:12px;color:var(--main);text-decoration:none}
+.howto ol{padding-left:1.4em;margin:6px 0}
+.howto li{margin:6px 0}
+.safe{font-size:17px;color:var(--sub)}
+footer{font-size:16px;color:var(--sub);text-align:center;padding:24px 0}
+#printArea{display:none}
+@media print{
+  body{background:#fff}
+  body > *:not(#printArea){display:none !important}
+  #printArea{display:block}
+  #printArea .pg{overflow:hidden;break-after:page;page-break-after:always;margin:0;padding:0}
+  #printArea .pg:last-child{break-after:auto;page-break-after:auto}
+  #printArea img{display:block;width:100%;height:100%}
+}
+@media (max-width:420px){
+  h1{font-size:25px}
+  .btns2{grid-template-columns:1fr}
+  .choice{grid-template-columns:1fr}
+}
+
+.rowcard{border:2px solid #e2dccd;border-radius:12px;padding:10px 12px;margin:10px 0;background:#fffdf8}
+.rowhead{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.rowhead .num{flex:none;width:40px;height:40px;border-radius:50%;background:#333;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:18px}
+.rowhead .sp{flex:1}
+.rowhead button{min-width:60px;min-height:46px;border:2px solid var(--main);background:#fff;color:var(--main);border-radius:10px;font-size:16px;font-weight:bold;padding:0 6px}
+.rowhead button.del{border-color:var(--accent);color:var(--accent)}
+.rowhead button:disabled{opacity:.3}
+.rowcard input{margin:4px 0}
+.colset{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:center}
+.colset .check{padding:6px 0}
+details.paste summary{font-weight:bold;font-size:20px;cursor:pointer;padding:10px 0;color:var(--main)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="home" href="../index.html">← 班長・幹事の道具 トップへ</a>
+  <h1>班の名簿メーカー</h1>
+  <p class="lead">回覧板や班の名簿を、スマホだけで作れます。パソコンがなくても大丈夫。できた名簿は画像にしてコンビニで印刷できます。</p>
+</header>
+
+<section class="card">
+  <h2><span class="no">1</span>題名と、のせる項目</h2>
+  <label class="f" for="title">いちばん上の題名</label>
+  <input type="text" id="title" value="班の名簿">
+  <label class="f" for="han">班の名前・組の名前（なくてもよい）</label>
+  <input type="text" id="han" placeholder="例：さくら町内会 3班">
+  <label class="f" for="when">作った日など（なくてもよい）</label>
+  <input type="text" id="when" placeholder="例：令和8年4月 作成">
+  <label class="f">名簿にのせる項目（お名前と番号は必ずのります）</label>
+  <div class="colset">
+    <label class="check"><input type="checkbox" id="c_addr" checked>のせる</label><input type="text" id="l_addr" value="住所・号" aria-label="項目名1">
+    <label class="check"><input type="checkbox" id="c_tel" checked>のせる</label><input type="text" id="l_tel" value="電話" aria-label="項目名2">
+    <label class="check"><input type="checkbox" id="c_note">のせる</label><input type="text" id="l_note" value="備考" aria-label="項目名3">
+  </div>
+  <p class="hint">右の項目名は書きかえられます（例：「号棟・部屋」「人数」など）。</p>
+  <label class="check"><input type="checkbox" id="blank">あとで手書きできる空欄の行を足す</label>
+</section>
+
+<section class="card">
+  <h2><span class="no">2</span>1軒ずつ入れる</h2>
+  <div id="rows"></div>
+  <button class="btn sub" id="addRow" type="button">＋ 1軒ふやす</button>
+  <details class="paste">
+    <summary>お名前をまとめて入れる（貼り付け）</summary>
+    <p class="hint">お名前を1行に1軒ずつ入れて「名簿に足す」を押します。Excelから行ごとコピーした場合は「お名前・住所・電話・備考」の順に入ります。</p>
+    <textarea id="paste" placeholder="例：&#10;山田 太郎&#10;鈴木 花子"></textarea>
+    <button class="btn" id="doPaste" type="button">名簿に足す</button>
+  </details>
+  <button class="btn sub small" id="clearAll" type="button">全部消す</button>
+</section>
+
+<section class="card">
+  <h2><span class="no">3</span>見本を見る・保存する</h2>
+  <p class="hint">見本（A4たて1枚）。軒数に合わせて字の大きさが自動で変わります。</p>
+  <div class="preview"><canvas id="pv" aria-label="できあがりの見本"></canvas></div>
+  <div class="btns2" style="margin-top:12px">
+    <button class="btn" id="btnImg">画像で保存する</button>
+    <button class="btn sub" id="btnPrint">このまま印刷する</button>
+  </div>
+  <div class="msg" id="msg"></div>
+  <div class="outimgs" id="out"></div>
+</section>
+
+<section class="card howto">
+  <h2>使い方（3ステップ）</h2>
+  <ol>
+    <li>題名と、のせる項目（住所・電話など）をえらびます。</li>
+    <li>「＋ 1軒ふやす」で1軒ずつお名前などを入れます。順番は「上へ」「下へ」で変えられます。</li>
+    <li>「画像で保存する」を押し、出てきた画像を長押しして保存。コンビニのネットプリントに画像を登録すればA4で印刷できます。プリンターがあれば「このまま印刷する」でもOKです。</li>
+  </ol>
+  <p class="safe">入れた内容（お名前・電話など）は、この端末の中だけに保存されます。インターネットのどこにも送りません。人に貸すスマホでは、終わったら「全部消す」を押してください。</p>
+</section>
+
+<!-- MONETIZE_SLOT -->
+
+<footer>班長・幹事の道具 ／ 無料・登録なし</footer>
+</div>
+<div id="printArea"></div>
+
+<script>/* ---- 共通（このページだけで完結。外部への通信はしません） ---- */
+var FONT='"Hiragino Sans","Hiragino Kaku Gothic ProN","BIZ UDPGothic","Yu Gothic","YuGothic","Meiryo","Noto Sans JP","Noto Sans CJK JP",sans-serif';
+var DPI=200;
+function $(id){return document.getElementById(id)}
+function makeStore(key){
+  return {
+    load:function(){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}},
+    save:function(v){try{localStorage.setItem(key,JSON.stringify(v));return true}catch(e){return false}}
+  };
+}
+function setFont(ctx,size,weight){ctx._fs=size;ctx._fw=weight||'bold';ctx.font=ctx._fw+' '+size+'px '+FONT}
+/* 小さい字（mm単位）をそのまま書くと字間がくずれるので、10倍の大きさで書いて縮める */
+function fillT(ctx,text,x,y){
+  ctx.save();ctx.scale(0.1,0.1);ctx.font=ctx._fw+' '+(ctx._fs*10)+'px '+FONT;
+  ctx.fillText(text,x*10,y*10);ctx.restore();
+}
+/* 幅maxW・高さmaxHに収まる文字の大きさ（単位はmm） */
+function fitSize(ctx,text,maxW,maxH,weight){
+  if(!text)return maxH;
+  setFont(ctx,100,weight);
+  var w=ctx.measureText(text).width||1;
+  return Math.max(0.5,Math.min(maxH,maxW*100/w));
+}
+/* 長い名前を2行に分ける位置（・や空白を優先） */
+function splitTwo(s){
+  var seps=['・','　',' ','、','／','/','＆','&'],best=-1,mid=s.length/2,bd=1e9;
+  for(var i=1;i<s.length-1;i++){
+    if(seps.indexOf(s[i])>=0){var d=Math.abs(i-mid);if(d<bd){bd=d;best=i}}
+  }
+  if(best>0){
+    var a=s.slice(0,s[best]==='・'||s[best]==='＆'||s[best]==='&'?best+1:best).trim(),b=s.slice(best+1).trim();
+    if(a&&b)return [a,b];
+  }
+  var m=Math.ceil(s.length/2);return [s.slice(0,m),s.slice(m)];
+}
+/* 1行か2行か、大きく書ける方を選ぶ */
+function fitName(ctx,name,maxW,maxH,allowTwo,weight){
+  var one=fitSize(ctx,name,maxW,maxH,weight);
+  if(allowTwo&&name.length>=5){
+    var p=splitTwo(name);
+    var two=Math.min(fitSize(ctx,p[0],maxW,maxH*0.46,weight),fitSize(ctx,p[1],maxW,maxH*0.46,weight));
+    if(two>one*1.2)return {lines:p,size:two};
+  }
+  return {lines:[name],size:one};
+}
+/* 行を中央（または左）に書く。cyは中心のy */
+function drawLines(ctx,fit,x,cy,align,weight,color){
+  setFont(ctx,fit.size,weight);
+  ctx.fillStyle=color||'#111';ctx.textAlign=align||'center';ctx.textBaseline='middle';
+  var lh=fit.size*1.12,n=fit.lines.length,y0=cy-lh*(n-1)/2;
+  for(var i=0;i<n;i++)fillT(ctx,fit.lines[i],x,y0+i*lh+fit.size*0.04);
+}
+function makeCanvas(wmm,hmm,dpi){
+  var s=dpi/25.4,c=document.createElement('canvas');
+  c.width=Math.round(wmm*s);c.height=Math.round(hmm*s);
+  var ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+  ctx.scale(c.width/wmm,c.height/hmm);
+  return {c:c,ctx:ctx};
+}
+function renderPreview(cv,wmm,hmm,draw){
+  var cssW=Math.max(200,cv.parentElement.clientWidth-24),dpr=Math.min(2,window.devicePixelRatio||1);
+  var maxCss=wmm>hmm?720:520;cssW=Math.min(cssW,maxCss);
+  cv.style.width=cssW+'px';
+  cv.width=Math.round(cssW*dpr);cv.height=Math.round(cssW*dpr*hmm/wmm);
+  var ctx=cv.getContext('2d');ctx.setTransform(1,0,0,1,0,0);
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.scale(cv.width/wmm,cv.height/hmm);
+  draw(ctx);
+}
+function arrow(ctx,x1,y1,x2,y2,w){
+  var a=Math.atan2(y2-y1,x2-x1),h=w*3.2;
+  ctx.strokeStyle='#333';ctx.fillStyle='#333';ctx.lineWidth=w;ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2-Math.cos(a)*h*0.8,y2-Math.sin(a)*h*0.8);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-Math.cos(a)*h-Math.sin(a)*h*0.6,y2-Math.sin(a)*h+Math.cos(a)*h*0.6);
+  ctx.lineTo(x2-Math.cos(a)*h+Math.sin(a)*h*0.6,y2-Math.sin(a)*h-Math.cos(a)*h*0.6);
+  ctx.closePath();ctx.fill();
+}
+function showMsg(id,text){var m=$(id);if(!m)return;m.textContent=text;m.className='msg'+(text?' show':'')}
+/* 画像を画面に並べる（長押しで保存できる）＋ダウンロードのリンク */
+function showImages(box,list){
+  box.innerHTML='';
+  list.forEach(function(it){
+    var d=document.createElement('div');d.className='outimg';
+    if(it.label){var p=document.createElement('p');p.style.margin='0 0 6px';p.style.fontWeight='bold';p.textContent=it.label;d.appendChild(p)}
+    var im=document.createElement('img');im.src=it.url;im.alt=it.label||'できあがりの画像';d.appendChild(im);
+    var a=document.createElement('a');a.href=it.url;a.download=it.file;a.textContent='この画像をダウンロード（'+it.file+'）';d.appendChild(a);
+    box.appendChild(d);
+  });
+}
+/* 印刷：1枚ずつA4の大きさで並べて window.print */
+function printPages(urls,landscape){
+  var st=$('pageStyle');
+  st.textContent='@page{size:A4 '+(landscape?'landscape':'portrait')+';margin:0}'+
+    '@media print{#printArea .pg{width:'+(landscape?'297mm':'210mm')+';height:'+(landscape?'209.5mm':'296.5mm')+'}}';
+  var pa=$('printArea');pa.innerHTML='';
+  var pending=urls.length;
+  return new Promise(function(res){
+    if(!pending){res();return}
+    urls.forEach(function(u){
+      var pg=document.createElement('div');pg.className='pg';
+      var im=new Image();im.onload=im.onerror=function(){if(--pending===0)res()};im.src=u;
+      pg.appendChild(im);pa.appendChild(pg);
+    });
+  });
+}
+function debounce(fn,ms){var t;return function(){clearTimeout(t);t=setTimeout(fn,ms)}}
+function lines(text){return String(text||'').replace(/\r/g,'').split('\n').map(function(s){return s.replace(/^\s+|\s+$/g,'')}).filter(function(s){return s.length})}
+/* 2回押すと実行するボタン（確認ダイアログを出さない） */
+function twoStep(btn,fn){
+  var orig=btn.textContent,armed=false,t;
+  btn.addEventListener('click',function(){
+    if(!armed){armed=true;btn.textContent='本当に消しますか？ もう一度押すと消えます';t=setTimeout(function(){armed=false;btn.textContent=orig},5000);return}
+    clearTimeout(t);armed=false;btn.textContent=orig;fn();
+  });
+}
+
+var store=makeStore('meibo_v1');
+var st={title:'班の名簿',han:'',when:'',blank:false,c:{addr:true,tel:true,note:false},l:{addr:'住所・号',tel:'電話',note:'備考'},rows:[]};
+(function(){var s=store.load();if(s)for(var k in st)if(k in s)st[k]=s[k]})();
+if(!st.rows.length)for(var i0=0;i0<3;i0++)st.rows.push({name:'',addr:'',tel:'',note:''});
+var W=210,H=297,M=13;
+var KEYS=['addr','tel','note'];
+
+function draw(ctx){
+  var y=M;
+  var ts=fitSize(ctx,st.title||' ',W-2*M,12);setFont(ctx,ts);ctx.fillStyle='#111';ctx.textAlign='center';ctx.textBaseline='middle';
+  fillT(ctx,st.title,W/2,y+6);y+=14;
+  if(st.han||st.when){
+    var sub=[st.han,st.when].filter(Boolean).join('　　');
+    var hs=fitSize(ctx,sub,W-2*M,6.5,'bold');setFont(ctx,hs);fillT(ctx,sub,W/2,y+3.5);y+=9;
+  }
+  var top=y+3,bottom=H-M;
+  var list=st.rows.filter(function(r){return (r.name||r.addr||r.tel||r.note).trim()});
+  var n=list.length?list.length:12;
+  if(st.blank&&list.length)n=Math.max(n,Math.min(30,n+Math.max(3,Math.ceil(n*0.3))),list.length<15?15:n);
+  var cols=[{k:'no',t:'番号',wt:0,w:15},{k:'name',t:'お名前',wt:3.2}];
+  var wts={addr:4,tel:3.2,note:2.8};
+  KEYS.forEach(function(k){if(st.c[k])cols.push({k:k,t:st.l[k]||'',wt:wts[k]})});
+  // 中身の長さに合わせて列の幅を決める（長い住所や名前の列を広く）
+  var rest=W-2*M-15,sum=0;
+  cols.forEach(function(c){
+    if(!c.wt)return;
+    var wt=c.k==='name'?'bold':'normal';setFont(ctx,100,wt);
+    var mx=ctx.measureText(c.t||'').width;
+    list.forEach(function(r){var v=(r[c.k]||'').trim();if(v)mx=Math.max(mx,ctx.measureText(v).width)});
+    c.d=Math.max(20,mx*5/100+5);sum+=c.d;
+  });
+  cols.forEach(function(c){if(c.wt)c.w=rest*c.d/sum});
+  var hh=10,rowH=Math.min(18,(bottom-top-hh)/n);hh=Math.min(10,Math.max(7.5,rowH));
+  rowH=Math.min(18,(bottom-top-hh)/n);
+  var tableH=hh+rowH*n,x0=M,x;
+  ctx.fillStyle='#e8e8e8';ctx.fillRect(x0,top,W-2*M,hh);
+  x=x0;cols.forEach(function(c){
+    var s=fitSize(ctx,c.t||' ',c.w-3,hh*0.55);setFont(ctx,s);ctx.fillStyle='#111';ctx.textAlign='center';ctx.textBaseline='middle';
+    fillT(ctx,c.t,x+c.w/2,top+hh/2);x+=c.w;
+  });
+  for(var r=0;r<n;r++){
+    var it=list[r]||{},ry=top+hh+r*rowH;x=x0;
+    cols.forEach(function(c){
+      if(c.k==='no'){
+        var s=fitSize(ctx,String(r+1),c.w-4,rowH*0.55);setFont(ctx,s);ctx.fillStyle='#111';ctx.textAlign='center';ctx.textBaseline='middle';
+        fillT(ctx,String(r+1),x+c.w/2,ry+rowH/2);
+      }else{
+        var v=(it[c.k]||'').trim();
+        if(v){
+          var big=c.k==='name'?0.7:0.58;
+          var f=fitName(ctx,v,c.w-4,Math.min(rowH*big,c.k==='name'?10:7.5),rowH>=8&&c.k!=='tel',c.k==='name'?'bold':'normal');
+          drawLines(ctx,f,x+2,ry+rowH/2,'left',c.k==='name'?'bold':'normal');
+        }
+      }
+      x+=c.w;
+    });
+  }
+  ctx.strokeStyle='#222';ctx.setLineDash([]);ctx.lineWidth=0.25;
+  for(var k=0;k<=n;k++){ctx.beginPath();ctx.moveTo(x0,top+hh+k*rowH);ctx.lineTo(W-M,top+hh+k*rowH);ctx.stroke()}
+  x=x0;cols.forEach(function(c,i){if(i){ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,top+tableH);ctx.stroke()}x+=c.w});
+  ctx.lineWidth=0.6;ctx.strokeRect(x0,top,W-2*M,tableH);
+}
+
+/* ---- 画面 ---- */
+var pv=$('pv');
+var refresh=debounce(function(){renderPreview(pv,W,H,draw)},150);
+function save(){store.save(st)}
+function fillForm(){
+  $('title').value=st.title;$('han').value=st.han;$('when').value=st.when;$('blank').checked=!!st.blank;
+  KEYS.forEach(function(k){$('c_'+k).checked=!!st.c[k];$('l_'+k).value=st.l[k]});
+}
+function readForm(){
+  st.title=$('title').value;st.han=$('han').value;st.when=$('when').value;st.blank=$('blank').checked;
+  KEYS.forEach(function(k){st.c[k]=$('c_'+k).checked;st.l[k]=$('l_'+k).value});
+}
+var PH={name:'お名前',addr:'',tel:'',note:''};
+function renderRows(){
+  var box=$('rows');box.innerHTML='';
+  st.rows.forEach(function(r,i){
+    var d=document.createElement('div');d.className='rowcard';
+    d.innerHTML='<div class="rowhead"><span class="num"></span><span class="sp"></span><button type="button" data-a="up">上へ</button><button type="button" data-a="down">下へ</button><button type="button" class="del" data-a="del">消す</button></div>';
+    d.querySelector('.num').textContent=i+1;
+    ['name'].concat(KEYS).forEach(function(k){
+      if(k!=='name'&&!st.c[k])return;
+      var inp=document.createElement('input');inp.type='text';inp.value=r[k]||'';
+      inp.placeholder=k==='name'?'お名前':(st.l[k]||'');
+      if(k==='tel')inp.inputMode='tel';
+      inp.setAttribute('aria-label',(i+1)+'番目の'+inp.placeholder);
+      inp.addEventListener('input',function(){r[k]=inp.value;save();refresh();clearOut()});
+      d.appendChild(inp);
+    });
+    var up=d.querySelector('[data-a=up]'),dn=d.querySelector('[data-a=down]'),del=d.querySelector('[data-a=del]');
+    up.disabled=i===0;dn.disabled=i===st.rows.length-1;
+    up.onclick=function(){swap(i,i-1)};dn.onclick=function(){swap(i,i+1)};
+    del.onclick=function(){st.rows.splice(i,1);if(!st.rows.length)st.rows.push({name:'',addr:'',tel:'',note:''});changed()};
+    box.appendChild(d);
+  });
+}
+function swap(i,j){if(j<0||j>=st.rows.length)return;var t=st.rows[i];st.rows[i]=st.rows[j];st.rows[j]=t;changed()}
+function clearOut(){$('out').innerHTML='';showMsg('msg','')}
+function changed(){save();renderRows();refresh();clearOut()}
+fillForm();renderRows();renderPreview(pv,W,H,draw);
+document.querySelectorAll('#title,#han,#when,#blank,.colset input').forEach(function(el){
+  el.addEventListener('input',function(){readForm();save();refresh();clearOut()});
+  el.addEventListener('change',function(){readForm();save();renderRows();refresh();clearOut()});
+});
+$('addRow').onclick=function(){st.rows.push({name:'',addr:'',tel:'',note:''});changed();
+  var ins=$('rows').querySelectorAll('.rowcard');var last=ins[ins.length-1];if(last){last.querySelector('input').focus()}};
+$('doPaste').onclick=function(){
+  var ls=String($('paste').value||'').replace(/\r/g,'').split('\n').filter(function(s){return s.trim()});
+  if(!ls.length){showMsg('msg','貼り付ける欄が空です。');return}
+  st.rows=st.rows.filter(function(r){return (r.name||r.addr||r.tel||r.note).trim()});
+  ls.forEach(function(l){var p=l.split('\t').map(function(s){return s.trim()});
+    st.rows.push({name:p[0]||'',addr:p[1]||'',tel:p[2]||'',note:p.slice(3).join(' ')})});
+  $('paste').value='';changed();showMsg('msg',ls.length+'軒を名簿に足しました。');
+};
+twoStep($('clearAll'),function(){st.rows=[{name:'',addr:'',tel:'',note:''}];changed()});
+window.addEventListener('resize',refresh);
+function bigImage(){var m=makeCanvas(W,H,DPI);draw(m.ctx);return m.c.toDataURL('image/png')}
+$('btnImg').onclick=function(){
+  readForm();var u=bigImage();
+  showMsg('msg','画像ができました。下の画像を長押しすると「写真に保存」できます。');
+  showImages($('out'),[{url:u,file:'meibo.png',label:'できあがり（A4たて）'}]);
+  $('out').scrollIntoView({behavior:'smooth',block:'start'});
+};
+$('btnPrint').onclick=function(){readForm();printPages([bigImage()],false).then(function(){window.print()})};
+</script>
+</body>
+</html>

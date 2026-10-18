@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>班長・幹事の道具｜回覧板の順番表・名簿・三角名札をスマホで作成（無料）</title>
+<meta name="description" content="町内会の班長さん・会の幹事さん向けの無料の道具です。回覧板の順番表、班の名簿、三角名札を、パソコンなしでスマホだけで作成できます。登録不要、入れた内容はどこにも送りません。">
+<style>:root{
+  --bg:#fbf8f1; --card:#ffffff; --ink:#1d1d1d; --sub:#555; --line:#d8d0bf;
+  --main:#1f5f8b; --main-ink:#ffffff; --main-dark:#164766; --accent:#b4432b;
+  --soft:#eef4f8; --warn:#fff4d6;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","BIZ UDPGothic","Yu Gothic","YuGothic","Meiryo","Noto Sans JP","Noto Sans CJK JP",sans-serif;
+  font-size:20px;line-height:1.7}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 40px}
+header.top{padding:18px 0 6px}
+header.top a.home{display:inline-block;font-size:18px;color:var(--main);margin-bottom:6px}
+h1{font-size:28px;line-height:1.35;margin:4px 0 8px}
+h2{font-size:23px;margin:0 0 12px;line-height:1.4}
+h2 .no{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;
+  background:var(--main);color:#fff;font-size:20px;margin-right:8px;vertical-align:2px}
+p.lead{margin:0 0 14px;color:var(--sub)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;margin:16px 0;
+  box-shadow:0 1px 0 rgba(0,0,0,.03)}
+label.f{display:block;font-weight:bold;margin:14px 0 6px}
+label.f:first-child{margin-top:0}
+.hint{font-size:17px;color:var(--sub);margin:4px 0 0;line-height:1.55}
+input[type=text],textarea,select{width:100%;font:inherit;font-size:20px;padding:12px 12px;border:2px solid #b9b2a3;
+  border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:220px;line-height:1.6}
+input[type=text]:focus,textarea:focus,select:focus{outline:3px solid #9cc3e0;border-color:var(--main)}
+.check{display:flex;align-items:center;gap:12px;padding:10px 4px;font-size:20px;cursor:pointer}
+.check input{width:30px;height:30px;flex:none;accent-color:var(--main)}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice label{display:flex;align-items:center;gap:10px;border:2px solid #b9b2a3;border-radius:12px;padding:12px;cursor:pointer;
+  background:#fff;font-weight:bold;line-height:1.35}
+.choice input{width:26px;height:26px;flex:none;accent-color:var(--main)}
+.choice label:has(input:checked){border-color:var(--main);background:var(--soft)}
+button{font:inherit;cursor:pointer}
+.btn{display:block;width:100%;min-height:64px;border:0;border-radius:14px;font-size:22px;font-weight:bold;
+  padding:12px 16px;margin:10px 0;background:var(--main);color:var(--main-ink)}
+.btn:active{background:var(--main-dark)}
+.btn.sub{background:#fff;color:var(--main);border:2px solid var(--main)}
+.btn.small{min-height:52px;font-size:19px}
+.btns2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns2 .btn{margin:6px 0}
+.preview{background:#e9e4d8;border-radius:12px;padding:12px;text-align:center}
+.preview canvas{width:100%;height:auto;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);display:block;margin:0 auto}
+.msg{background:var(--warn);border-radius:10px;padding:10px 14px;margin:10px 0;font-weight:bold;display:none}
+.msg.show{display:block}
+.outimgs{margin-top:12px}
+.outimg{border-top:1px dashed var(--line);padding:14px 0}
+.outimg img{width:100%;height:auto;border:1px solid #ccc;background:#fff;display:block}
+.outimg a{display:block;text-align:center;font-weight:bold;font-size:20px;margin-top:8px;padding:12px;border:2px solid var(--main);
+  border-radius:12px;color:var(--main);text-decoration:none}
+.howto ol{padding-left:1.4em;margin:6px 0}
+.howto li{margin:6px 0}
+.safe{font-size:17px;color:var(--sub)}
+footer{font-size:16px;color:var(--sub);text-align:center;padding:24px 0}
+#printArea{display:none}
+@media print{
+  body{background:#fff}
+  body > *:not(#printArea){display:none !important}
+  #printArea{display:block}
+  #printArea .pg{overflow:hidden;break-after:page;page-break-after:always;margin:0;padding:0}
+  #printArea .pg:last-child{break-after:auto;page-break-after:auto}
+  #printArea img{display:block;width:100%;height:100%}
+}
+@media (max-width:420px){
+  h1{font-size:25px}
+  .btns2{grid-template-columns:1fr}
+  .choice{grid-template-columns:1fr}
+}
+
+.tool{display:block;text-decoration:none;color:var(--ink);background:#fff;border:2px solid var(--main);border-radius:16px;padding:18px 18px 16px;margin:16px 0}
+.tool:active{background:var(--soft)}
+.tool .t{display:block;font-size:25px;font-weight:bold;color:var(--main);line-height:1.35}
+.tool .t::after{content:" →"}
+.tool .w{display:block;margin-top:8px;font-size:19px;color:var(--sub);line-height:1.55}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <h1>班長・幹事の道具</h1>
+  <p class="lead">回覧板の順番表、班の名簿、三角名札を、スマホだけで作れます。パソコン・Excel・Wordはいりません。無料で、登録もいりません。</p>
+</header>
+
+<a class="tool" href="kairan-junban/index.html">
+  <span class="t">回覧板の順番表を作る</span>
+  <span class="w">こんな時に：回覧板の「回す順番」と、受け取った日・ハンコの欄がある表を作りたい時。</span>
+</a>
+<a class="tool" href="meibo/index.html">
+  <span class="t">班の名簿を作る</span>
+  <span class="w">こんな時に：班の人のお名前・住所・電話をまとめた名簿を、A4の紙1枚にしたい時。</span>
+</a>
+<a class="tool" href="sankaku-nafuda/index.html">
+  <span class="t">三角名札をまとめて作る</span>
+  <span class="w">こんな時に：会議や総会で机に置く三角の名札を、何人分も一度に印刷したい時。</span>
+</a>
+
+<section class="card howto">
+  <h2>どれも同じ3ステップ</h2>
+  <ol>
+    <li>お名前を入れる（コピーして貼ってもOK）。</li>
+    <li>見本で、できあがりを確かめる。</li>
+    <li>「画像で保存する」でスマホに保存して、コンビニのネットプリントで印刷。プリンターがあれば、そのまま印刷もできます。</li>
+  </ol>
+  <p class="safe">入れたお名前などは、お使いのスマホ（パソコン）の中だけに保存されます。インターネットのどこにも送りません。</p>
+</section>
+
+<!-- MONETIZE_SLOT -->
+
+<footer>班長・幹事の道具 ／ 無料・登録なし</footer>
+</div>
+</body>
+</html>

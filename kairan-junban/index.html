@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>回覧板の順番表をスマホで作成｜パソコン・Excel不要の無料メーカー</title>
+<meta name="description" content="回覧板の順番表（回覧順・ハンコ欄つき）をスマホだけで作成できる無料の道具です。名前を1行ずつ入れるだけでA4に自動で収まり、画像で保存してコンビニのネットプリントで印刷できます。パソコン・Excel・Wordは不要。">
+<style id="pageStyle">@page{size:A4 portrait;margin:0}</style>
+<style>:root{
+  --bg:#fbf8f1; --card:#ffffff; --ink:#1d1d1d; --sub:#555; --line:#d8d0bf;
+  --main:#1f5f8b; --main-ink:#ffffff; --main-dark:#164766; --accent:#b4432b;
+  --soft:#eef4f8; --warn:#fff4d6;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","BIZ UDPGothic","Yu Gothic","YuGothic","Meiryo","Noto Sans JP","Noto Sans CJK JP",sans-serif;
+  font-size:20px;line-height:1.7}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 40px}
+header.top{padding:18px 0 6px}
+header.top a.home{display:inline-block;font-size:18px;color:var(--main);margin-bottom:6px}
+h1{font-size:28px;line-height:1.35;margin:4px 0 8px}
+h2{font-size:23px;margin:0 0 12px;line-height:1.4}
+h2 .no{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;
+  background:var(--main);color:#fff;font-size:20px;margin-right:8px;vertical-align:2px}
+p.lead{margin:0 0 14px;color:var(--sub)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;margin:16px 0;
+  box-shadow:0 1px 0 rgba(0,0,0,.03)}
+label.f{display:block;font-weight:bold;margin:14px 0 6px}
+label.f:first-child{margin-top:0}
+.hint{font-size:17px;color:var(--sub);margin:4px 0 0;line-height:1.55}
+input[type=text],textarea,select{width:100%;font:inherit;font-size:20px;padding:12px 12px;border:2px solid #b9b2a3;
+  border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:220px;line-height:1.6}
+input[type=text]:focus,textarea:focus,select:focus{outline:3px solid #9cc3e0;border-color:var(--main)}
+.check{display:flex;align-items:center;gap:12px;padding:10px 4px;font-size:20px;cursor:pointer}
+.check input{width:30px;height:30px;flex:none;accent-color:var(--main)}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice label{display:flex;align-items:center;gap:10px;border:2px solid #b9b2a3;border-radius:12px;padding:12px;cursor:pointer;
+  background:#fff;font-weight:bold;line-height:1.35}
+.choice input{width:26px;height:26px;flex:none;accent-color:var(--main)}
+.choice label:has(input:checked){border-color:var(--main);background:var(--soft)}
+button{font:inherit;cursor:pointer}
+.btn{display:block;width:100%;min-height:64px;border:0;border-radius:14px;font-size:22px;font-weight:bold;
+  padding:12px 16px;margin:10px 0;background:var(--main);color:var(--main-ink)}
+.btn:active{background:var(--main-dark)}
+.btn.sub{background:#fff;color:var(--main);border:2px solid var(--main)}
+.btn.small{min-height:52px;font-size:19px}
+.btns2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns2 .btn{margin:6px 0}
+.preview{background:#e9e4d8;border-radius:12px;padding:12px;text-align:center}
+.preview canvas{width:100%;height:auto;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);display:block;margin:0 auto}
+.msg{background:var(--warn);border-radius:10px;padding:10px 14px;margin:10px 0;font-weight:bold;display:none}
+.msg.show{display:block}
+.outimgs{margin-top:12px}
+.outimg{border-top:1px dashed var(--line);padding:14px 0}
+.outimg img{width:100%;height:auto;border:1px solid #ccc;background:#fff;display:block}
+.outimg a{display:block;text-align:center;font-weight:bold;font-size:20px;margin-top:8px;padding:12px;border:2px solid var(--main);
+  border-radius:12px;color:var(--main);text-decoration:none}
+.howto ol{padding-left:1.4em;margin:6px 0}
+.howto li{margin:6px 0}
+.safe{font-size:17px;color:var(--sub)}
+footer{font-size:16px;color:var(--sub);text-align:center;padding:24px 0}
+#printArea{display:none}
+@media print{
+  body{background:#fff}
+  body > *:not(#printArea){display:none !important}
+  #printArea{display:block}
+  #printArea .pg{overflow:hidden;break-after:page;page-break-after:always;margin:0;padding:0}
+  #printArea .pg:last-child{break-after:auto;page-break-after:auto}
+  #printArea img{display:block;width:100%;height:100%}
+}
+@media (max-width:420px){
+  h1{font-size:25px}
+  .btns2{grid-template-columns:1fr}
+  .choice{grid-template-columns:1fr}
+}
+
+.nlist{list-style:none;padding:0;margin:8px 0 0}
+.nlist li{display:flex;align-items:center;gap:8px;border-bottom:1px solid #eee;padding:8px 0}
+.nlist .num{flex:none;width:40px;height:40px;border-radius:50%;background:#333;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:18px}
+.nlist .nm{flex:1;min-width:0;word-break:break-all;font-weight:bold}
+.nlist button{flex:none;min-width:64px;min-height:48px;border:2px solid var(--main);background:#fff;color:var(--main);border-radius:10px;font-size:17px;font-weight:bold;padding:0 6px}
+.nlist button:disabled{opacity:.3}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="home" href="../index.html">← 班長・幹事の道具 トップへ</a>
+  <h1>回覧板の順番表メーカー</h1>
+  <p class="lead">お名前を入れるだけで、回覧板の順番表ができます。スマホだけでOK。パソコンもExcelもいりません。</p>
+</header>
+
+<section class="card">
+  <h2><span class="no">1</span>中身を入れる</h2>
+  <label class="f" for="title">いちばん上の題名</label>
+  <input type="text" id="title" value="回覧板 回覧順">
+  <label class="f" for="han">班の名前・組の名前（なくてもよい）</label>
+  <input type="text" id="han" placeholder="例：3班　／　さくら町 第2組">
+  <label class="f" for="names">お名前（1行に1軒ずつ。回す順に）</label>
+  <textarea id="names" placeholder="例：&#10;山田&#10;鈴木&#10;佐藤&#10;長谷川ひろみつ・まゆみ"></textarea>
+  <p class="hint">メモ帳やLINEの文字をコピーして貼り付けても大丈夫です。順番は下の「上へ」「下へ」でも変えられます。</p>
+  <p class="hint" id="count"></p>
+  <ul class="nlist" id="nlist"></ul>
+  <label class="f" for="last">最後に戻す人（なくてもよい）</label>
+  <input type="text" id="last" placeholder="例：班長 山田">
+  <p class="hint">入れると、表の最後に「◯◯さんへ戻す」と出ます。</p>
+  <label class="check"><input type="checkbox" id="date" checked>受け取った日を書く欄をつける</label>
+  <label class="check"><input type="checkbox" id="hanko" checked>確認印（ハンコ）の欄をつける</label>
+  <label class="f" for="memo">いちばん下のひとこと（なくてもよい）</label>
+  <input type="text" id="memo" value="見終わったら、早めに次の方へ回してください。">
+</section>
+
+<section class="card">
+  <h2><span class="no">2</span>形をえらぶ</h2>
+  <div class="choice">
+    <label><input type="radio" name="layout" value="table" checked>表の形<br>（番号・お名前・印）</label>
+    <label><input type="radio" name="layout" value="arrow">矢印で横に並ぶ形<br>（表紙むき）</label>
+  </div>
+  <p class="hint">見本（A4たて1枚）。軒数に合わせて字の大きさが自動で変わります。</p>
+  <div class="preview"><canvas id="pv" aria-label="できあがりの見本"></canvas></div>
+</section>
+
+<section class="card">
+  <h2><span class="no">3</span>保存する・印刷する</h2>
+  <div class="btns2">
+    <button class="btn" id="btnImg">画像で保存する</button>
+    <button class="btn sub" id="btnPrint">このまま印刷する</button>
+  </div>
+  <div class="msg" id="msg"></div>
+  <div class="outimgs" id="out"></div>
+</section>
+
+<section class="card howto">
+  <h2>使い方（3ステップ）</h2>
+  <ol>
+    <li>お名前を、回す順に1行ずつ入れます。</li>
+    <li>「表の形」か「矢印の形」をえらび、見本を見て確かめます。</li>
+    <li>「画像で保存する」を押し、出てきた画像を長押しして保存します。コンビニのネットプリントに画像を登録すれば、A4で印刷できます。家のプリンターがあれば「このまま印刷する」でもOKです。</li>
+  </ol>
+  <p class="safe">入れた内容は、この端末の中だけに保存されます（次に開いたときも残っています）。インターネットのどこにも送りません。</p>
+</section>
+
+<!-- MONETIZE_SLOT -->
+
+<footer>班長・幹事の道具 ／ 無料・登録なし</footer>
+</div>
+<div id="printArea"></div>
+
+<script>/* ---- 共通（このページだけで完結。外部への通信はしません） ---- */
+var FONT='"Hiragino Sans","Hiragino Kaku Gothic ProN","BIZ UDPGothic","Yu Gothic","YuGothic","Meiryo","Noto Sans JP","Noto Sans CJK JP",sans-serif';
+var DPI=200;
+function $(id){return document.getElementById(id)}
+function makeStore(key){
+  return {
+    load:function(){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}},
+    save:function(v){try{localStorage.setItem(key,JSON.stringify(v));return true}catch(e){return false}}
+  };
+}
+function setFont(ctx,size,weight){ctx._fs=size;ctx._fw=weight||'bold';ctx.font=ctx._fw+' '+size+'px '+FONT}
+/* 小さい字（mm単位）をそのまま書くと字間がくずれるので、10倍の大きさで書いて縮める */
+function fillT(ctx,text,x,y){
+  ctx.save();ctx.scale(0.1,0.1);ctx.font=ctx._fw+' '+(ctx._fs*10)+'px '+FONT;
+  ctx.fillText(text,x*10,y*10);ctx.restore();
+}
+/* 幅maxW・高さmaxHに収まる文字の大きさ（単位はmm） */
+function fitSize(ctx,text,maxW,maxH,weight){
+  if(!text)return maxH;
+  setFont(ctx,100,weight);
+  var w=ctx.measureText(text).width||1;
+  return Math.max(0.5,Math.min(maxH,maxW*100/w));
+}
+/* 長い名前を2行に分ける位置（・や空白を優先） */
+function splitTwo(s){
+  var seps=['・','　',' ','、','／','/','＆','&'],best=-1,mid=s.length/2,bd=1e9;
+  for(var i=1;i<s.length-1;i++){
+    if(seps.indexOf(s[i])>=0){var d=Math.abs(i-mid);if(d<bd){bd=d;best=i}}
+  }
+  if(best>0){
+    var a=s.slice(0,s[best]==='・'||s[best]==='＆'||s[best]==='&'?best+1:best).trim(),b=s.slice(best+1).trim();
+    if(a&&b)return [a,b];
+  }
+  var m=Math.ceil(s.length/2);return [s.slice(0,m),s.slice(m)];
+}
+/* 1行か2行か、大きく書ける方を選ぶ */
+function fitName(ctx,name,maxW,maxH,allowTwo,weight){
+  var one=fitSize(ctx,name,maxW,maxH,weight);
+  if(allowTwo&&name.length>=5){
+    var p=splitTwo(name);
+    var two=Math.min(fitSize(ctx,p[0],maxW,maxH*0.46,weight),fitSize(ctx,p[1],maxW,maxH*0.46,weight));
+    if(two>one*1.2)return {lines:p,size:two};
+  }
+  return {lines:[name],size:one};
+}
+/* 行を中央（または左）に書く。cyは中心のy */
+function drawLines(ctx,fit,x,cy,align,weight,color){
+  setFont(ctx,fit.size,weight);
+  ctx.fillStyle=color||'#111';ctx.textAlign=align||'center';ctx.textBaseline='middle';
+  var lh=fit.size*1.12,n=fit.lines.length,y0=cy-lh*(n-1)/2;
+  for(var i=0;i<n;i++)fillT(ctx,fit.lines[i],x,y0+i*lh+fit.size*0.04);
+}
+function makeCanvas(wmm,hmm,dpi){
+  var s=dpi/25.4,c=document.createElement('canvas');
+  c.width=Math.round(wmm*s);c.height=Math.round(hmm*s);
+  var ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+  ctx.scale(c.width/wmm,c.height/hmm);
+  return {c:c,ctx:ctx};
+}
+function renderPreview(cv,wmm,hmm,draw){
+  var cssW=Math.max(200,cv.parentElement.clientWidth-24),dpr=Math.min(2,window.devicePixelRatio||1);
+  var maxCss=wmm>hmm?720:520;cssW=Math.min(cssW,maxCss);
+  cv.style.width=cssW+'px';
+  cv.width=Math.round(cssW*dpr);cv.height=Math.round(cssW*dpr*hmm/wmm);
+  var ctx=cv.getContext('2d');ctx.setTransform(1,0,0,1,0,0);
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.scale(cv.width/wmm,cv.height/hmm);
+  draw(ctx);
+}
+function arrow(ctx,x1,y1,x2,y2,w){
+  var a=Math.atan2(y2-y1,x2-x1),h=w*3.2;
+  ctx.strokeStyle='#333';ctx.fillStyle='#333';ctx.lineWidth=w;ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2-Math.cos(a)*h*0.8,y2-Math.sin(a)*h*0.8);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-Math.cos(a)*h-Math.sin(a)*h*0.6,y2-Math.sin(a)*h+Math.cos(a)*h*0.6);
+  ctx.lineTo(x2-Math.cos(a)*h+Math.sin(a)*h*0.6,y2-Math.sin(a)*h-Math.cos(a)*h*0.6);
+  ctx.closePath();ctx.fill();
+}
+function showMsg(id,text){var m=$(id);if(!m)return;m.textContent=text;m.className='msg'+(text?' show':'')}
+/* 画像を画面に並べる（長押しで保存できる）＋ダウンロードのリンク */
+function showImages(box,list){
+  box.innerHTML='';
+  list.forEach(function(it){
+    var d=document.createElement('div');d.className='outimg';
+    if(it.label){var p=document.createElement('p');p.style.margin='0 0 6px';p.style.fontWeight='bold';p.textContent=it.label;d.appendChild(p)}
+    var im=document.createElement('img');im.src=it.url;im.alt=it.label||'できあがりの画像';d.appendChild(im);
+    var a=document.createElement('a');a.href=it.url;a.download=it.file;a.textContent='この画像をダウンロード（'+it.file+'）';d.appendChild(a);
+    box.appendChild(d);
+  });
+}
+/* 印刷：1枚ずつA4の大きさで並べて window.print */
+function printPages(urls,landscape){
+  var st=$('pageStyle');
+  st.textContent='@page{size:A4 '+(landscape?'landscape':'portrait')+';margin:0}'+
+    '@media print{#printArea .pg{width:'+(landscape?'297mm':'210mm')+';height:'+(landscape?'209.5mm':'296.5mm')+'}}';
+  var pa=$('printArea');pa.innerHTML='';
+  var pending=urls.length;
+  return new Promise(function(res){
+    if(!pending){res();return}
+    urls.forEach(function(u){
+      var pg=document.createElement('div');pg.className='pg';
+      var im=new Image();im.onload=im.onerror=function(){if(--pending===0)res()};im.src=u;
+      pg.appendChild(im);pa.appendChild(pg);
+    });
+  });
+}
+function debounce(fn,ms){var t;return function(){clearTimeout(t);t=setTimeout(fn,ms)}}
+function lines(text){return String(text||'').replace(/\r/g,'').split('\n').map(function(s){return s.replace(/^\s+|\s+$/g,'')}).filter(function(s){return s.length})}
+/* 2回押すと実行するボタン（確認ダイアログを出さない） */
+function twoStep(btn,fn){
+  var orig=btn.textContent,armed=false,t;
+  btn.addEventListener('click',function(){
+    if(!armed){armed=true;btn.textContent='本当に消しますか？ もう一度押すと消えます';t=setTimeout(function(){armed=false;btn.textContent=orig},5000);return}
+    clearTimeout(t);armed=false;btn.textContent=orig;fn();
+  });
+}
+
+var store=makeStore('kairan_junban_v1');
+var st={title:'回覧板 回覧順',han:'',names:'',last:'',date:true,hanko:true,memo:'見終わったら、早めに次の方へ回してください。',layout:'table'};
+(function(){var s=store.load();if(s)for(var k in st)if(k in s)st[k]=s[k]})();
+var W=210,H=297,M=13;
+
+function header(ctx){
+  var y=M;
+  var ts=fitSize(ctx,st.title||' ',W-2*M,12);
+  setFont(ctx,ts);ctx.fillStyle='#111';ctx.textAlign='center';ctx.textBaseline='middle';
+  fillT(ctx,st.title,W/2,y+6);y+=14;
+  if(st.han){var hs=fitSize(ctx,st.han,W-2*M,7,'bold');setFont(ctx,hs);fillT(ctx,st.han,W/2,y+4);y+=10}
+  return y+3;
+}
+function footer(ctx){
+  if(!st.memo)return H-M;
+  var s=fitSize(ctx,st.memo,W-2*M,5.5,'normal');setFont(ctx,s,'normal');
+  ctx.fillStyle='#222';ctx.textAlign='center';ctx.textBaseline='middle';
+  fillT(ctx,st.memo,W/2,H-M-3.5);return H-M-9;
+}
+function items(){
+  var n=lines(st.names),list=n.map(function(x,i){return {no:String(i+1),name:x}});
+  return list;
+}
+function drawTable(ctx){
+  var top=header(ctx),bottom=footer(ctx);
+  var list=items(),blank=!list.length;
+  if(blank)for(var i=0;i<10;i++)list.push({no:String(i+1),name:''});
+  if(st.last)list.push({no:'最後',name:st.last+' さんへ戻す',ret:true});
+  var cols=[{k:'no',t:'番号',w:18}];
+  var dateW=st.date?36:0,hW=st.hanko?28:0;
+  cols.push({k:'name',t:'お名前',w:W-2*M-18-dateW-hW});
+  if(st.date)cols.push({k:'date',t:'受け取った日',w:dateW});
+  if(st.hanko)cols.push({k:'hanko',t:'確認印',w:hW});
+  var avail=bottom-top-2,n=list.length;
+  var rowH=Math.min(26,(avail-9)/n),hh=Math.min(11,Math.max(8,rowH*0.8));
+  var tableH=hh+rowH*n,x0=M,y=top;
+  // 見出し
+  ctx.fillStyle='#e8e8e8';ctx.fillRect(x0,y,W-2*M,hh);
+  var x=x0;
+  cols.forEach(function(c){
+    var s=fitSize(ctx,c.t,c.w-3,hh*0.55);setFont(ctx,s);ctx.fillStyle='#111';ctx.textAlign='center';ctx.textBaseline='middle';
+    fillT(ctx,c.t,x+c.w/2,y+hh/2);x+=c.w;
+  });
+  y+=hh;
+  list.forEach(function(it){
+    x=x0;
+    if(it.ret){ctx.fillStyle='#f3f3f3';ctx.fillRect(x0,y,W-2*M,rowH)}
+    cols.forEach(function(c){
+      if(c.k==='no'){
+        var s=fitSize(ctx,it.no,c.w-4,rowH*0.55);setFont(ctx,s);ctx.fillStyle='#111';ctx.textAlign='center';ctx.textBaseline='middle';
+        fillT(ctx,it.no,x+c.w/2,y+rowH/2);
+      }else if(c.k==='name'&&it.name){
+        var f=fitName(ctx,it.name,c.w-5,Math.min(rowH*0.72,10.5),rowH>=8);
+        drawLines(ctx,f,x+3,y+rowH/2,'left');
+      }else if(c.k==='date'&&!it.ret){
+        var ds=Math.min(rowH*0.38,4.2);setFont(ctx,ds,'normal');ctx.fillStyle='#999';ctx.textAlign='right';ctx.textBaseline='middle';
+        fillT(ctx,'月　　　日',x+c.w-3,y+rowH/2);
+      }
+      x+=c.w;
+    });
+    y+=rowH;
+  });
+  // 罫線
+  ctx.strokeStyle='#222';ctx.setLineDash([]);
+  ctx.lineWidth=0.25;
+  for(var r=0;r<=n;r++){ctx.beginPath();ctx.moveTo(x0,top+hh+r*rowH);ctx.lineTo(W-M,top+hh+r*rowH);ctx.stroke()}
+  x=x0;cols.forEach(function(c,i){if(i){ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,top+tableH);ctx.stroke()}x+=c.w});
+  ctx.lineWidth=0.6;ctx.strokeRect(x0,top,W-2*M,tableH);
+}
+function drawArrow(ctx){
+  var top=header(ctx)+2,bottom=footer(ctx)-2;
+  var list=items();
+  if(!list.length)for(var i=0;i<6;i++)list.push({no:String(i+1),name:''});
+  if(st.last)list.push({no:'最後',name:st.last+' さんへ戻す',ret:true});
+  var k=list.length,best=null;
+  var availW=W-2*M,availH=bottom-top;
+  for(var cols=1;cols<=5;cols++){
+    if(cols>k&&cols>1)break;
+    var rows=Math.ceil(k/cols),gx=cols>1?11:0,gy=rows>1?10:0;
+    var bw=(availW-(cols-1)*gx)/cols,bh=Math.min((availH-(rows-1)*gy)/rows,bw*0.75,60);
+    if(bh<8)continue;
+    var bands=layoutBox(bw,bh),minS=1e9;
+    list.forEach(function(it){var f=fitName(ctx,it.name||'あいう',bands.nameW,bands.nameH,true);minS=Math.min(minS,f.size)});
+    var score=Math.min(minS,bands.nameH*0.6+0)+(cols===1?-3:0);
+    if(!best||score>best.score)best={score:score,cols:cols,rows:rows,gx:gx,gy:gy,bw:bw,bh:bh,bands:bands};
+  }
+  var b=best,gridH=b.rows*b.bh+(b.rows-1)*b.gy,gridW=b.cols*b.bw+(b.cols-1)*b.gx;
+  var oy=top+(availH-gridH)/2,ox=M+(availW-gridW)/2;
+  var aw=Math.max(0.6,Math.min(1.2,b.bw*0.02));
+  function pos(i){var r=Math.floor(i/b.cols),j=i%b.cols,c=(r%2===0)?j:b.cols-1-j;return {r:r,c:c,x:ox+c*(b.bw+b.gx),y:oy+r*(b.bh+b.gy)}}
+  list.forEach(function(it,i){
+    var p=pos(i),bd=b.bands;
+    ctx.setLineDash(it.ret?[2,1.5]:[]);ctx.lineWidth=0.6;ctx.strokeStyle='#222';
+    if(it.ret){ctx.fillStyle='#f3f3f3';ctx.fillRect(p.x,p.y,b.bw,b.bh)}
+    ctx.strokeRect(p.x,p.y,b.bw,b.bh);ctx.setLineDash([]);
+    // 番号
+    var rr=bd.numH*0.42,cx=p.x+bd.pad+rr+0.5,cy=p.y+bd.pad+bd.numH/2;
+    if(it.ret){
+      var s0=fitSize(ctx,'最後',b.bw*0.5,bd.numH*0.7);setFont(ctx,s0);ctx.fillStyle='#111';ctx.textAlign='left';ctx.textBaseline='middle';
+      fillT(ctx,'最後',p.x+bd.pad,cy);
+    }else{
+      var bwid=it.no.length>1?rr*2.9:rr*2,bx=p.x+bd.pad+0.5;
+      ctx.fillStyle='#222';ctx.beginPath();
+      if(ctx.roundRect){ctx.roundRect(bx,cy-rr,bwid,rr*2,rr)}else{ctx.rect(bx,cy-rr,bwid,rr*2)}
+      ctx.fill();cx=bx+bwid/2;
+      var s1=fitSize(ctx,it.no,bwid-rr*0.7,rr*1.3);setFont(ctx,s1);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+      fillT(ctx,it.no,cx,cy+s1*0.04);
+    }
+    // 名前
+    if(it.name){
+      var f=fitName(ctx,it.name,bd.nameW,Math.min(bd.nameH,26),true);
+      drawLines(ctx,f,p.x+b.bw/2,p.y+bd.pad+bd.numH+bd.nameH/2);
+    }
+    // 日付・印
+    if(bd.subH>0&&!it.ret){
+      var sy=p.y+b.bh-bd.pad-bd.subH/2;
+      if(st.hanko){
+        var hr=Math.min(bd.subH*0.46,b.bw*0.18);
+        ctx.strokeStyle='#aaa';ctx.lineWidth=0.3;ctx.setLineDash([0.8,0.8]);
+        ctx.beginPath();ctx.arc(p.x+b.bw-bd.pad-hr,sy,hr,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+        var hs=hr*0.7;setFont(ctx,hs,'normal');ctx.fillStyle='#bbb';ctx.textAlign='center';ctx.textBaseline='middle';
+        fillT(ctx,'印',p.x+b.bw-bd.pad-hr,sy);
+      }
+      if(st.date){
+        var ds=Math.min(bd.subH*0.42,4.5);setFont(ctx,ds,'normal');ctx.fillStyle='#999';ctx.textAlign='left';ctx.textBaseline='middle';
+        fillT(ctx,'　月　　日',p.x+bd.pad,sy);
+      }
+    }
+    // 次への矢印
+    if(i<k-1){
+      var q=pos(i+1);
+      if(q.r===p.r){
+        var ay=p.y+b.bh/2;
+        if(q.c>p.c)arrow(ctx,p.x+b.bw+1.2,ay,q.x-1.2,ay,aw);else arrow(ctx,p.x-1.2,ay,q.x+b.bw+1.2,ay,aw);
+      }else{
+        var ax=p.x+b.bw/2;arrow(ctx,ax,p.y+b.bh+1.2,ax,q.y-1.2,aw);
+      }
+    }
+  });
+}
+function layoutBox(bw,bh){
+  var pad=Math.min(2.5,bh*0.06),numH=Math.min(10,Math.max(5.5,bh*0.24));
+  var subH=(st.date||st.hanko)?Math.min(16,bh*0.3):0;
+  return {pad:pad,numH:numH,subH:subH,nameW:bw-pad*2-1,nameH:bh-pad*2-numH-subH};
+}
+function draw(ctx){if(st.layout==='arrow')drawArrow(ctx);else drawTable(ctx)}
+
+/* ---- 画面 ---- */
+var pv=$('pv');
+var refresh=debounce(function(){renderPreview(pv,W,H,draw)},150);
+function save(){store.save(st)}
+function readForm(){
+  st.title=$('title').value;st.han=$('han').value;st.names=$('names').value;st.last=$('last').value;
+  st.date=$('date').checked;st.hanko=$('hanko').checked;st.memo=$('memo').value;
+  var r=document.querySelector('input[name=layout]:checked');st.layout=r?r.value:'table';
+}
+function fillForm(){
+  $('title').value=st.title;$('han').value=st.han;$('names').value=st.names;$('last').value=st.last;
+  $('date').checked=st.date;$('hanko').checked=st.hanko;$('memo').value=st.memo;
+  var r=document.querySelector('input[name=layout][value='+st.layout+']');if(r)r.checked=true;
+}
+function renderList(){
+  var n=lines(st.names),ul=$('nlist');ul.innerHTML='';
+  $('count').textContent=n.length?('いま '+n.length+' 軒です。'):'';
+  n.forEach(function(nm,i){
+    var li=document.createElement('li');
+    li.innerHTML='<span class="num"></span><span class="nm"></span><button type="button" data-a="up">上へ</button><button type="button" data-a="down">下へ</button>';
+    li.querySelector('.num').textContent=i+1;li.querySelector('.nm').textContent=nm;
+    var up=li.querySelector('[data-a=up]'),dn=li.querySelector('[data-a=down]');
+    up.disabled=i===0;dn.disabled=i===n.length-1;
+    up.onclick=function(){move(i,-1)};dn.onclick=function(){move(i,1)};
+    ul.appendChild(li);
+  });
+}
+function move(i,d){
+  var n=lines(st.names),j=i+d;if(j<0||j>=n.length)return;
+  var t=n[i];n[i]=n[j];n[j]=t;st.names=n.join('\n');$('names').value=st.names;
+  save();renderList();refresh();
+}
+function onChange(){readForm();save();renderList();refresh();$('out').innerHTML='';showMsg('msg','')}
+fillForm();renderList();renderPreview(pv,W,H,draw);
+document.querySelectorAll('input,textarea').forEach(function(el){el.addEventListener('input',onChange);el.addEventListener('change',onChange)});
+window.addEventListener('resize',refresh);
+function bigImage(){var m=makeCanvas(W,H,DPI);draw(m.ctx);return m.c.toDataURL('image/png')}
+$('btnImg').onclick=function(){
+  readForm();
+  if(!lines(st.names).length)showMsg('msg','お名前が入っていないので、手書き用の空欄の表になります。');else showMsg('msg','画像ができました。下の画像を長押しすると「写真に保存」できます。');
+  var u=bigImage();showImages($('out'),[{url:u,file:'kairan_junban.png',label:'できあがり（A4たて）'}]);
+  $('out').scrollIntoView({behavior:'smooth',block:'start'});
+};
+$('btnPrint').onclick=function(){readForm();printPages([bigImage()],false).then(function(){window.print()})};
+</script>
+</body>
+</html>
